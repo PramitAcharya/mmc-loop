@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ActivitiesRouteImport } from './routes/activities'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CreateRouteImport } from './routes/create'
+import { Route as FeedRouteImport } from './routes/feed'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as PostPostIdRouteImport } from './routes/post.$postId'
+import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivitiesRoute = ActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedRoute = FeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostPostIdRoute = PostPostIdRouteImport.update({
+  id: '/post/$postId',
+  path: '/post/$postId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
+  id: '/profile/$username',
+  path: '/profile/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/create': typeof CreateRoute
+  '/feed': typeof FeedRoute
+  '/search': typeof SearchRoute
+  '/post/$postId': typeof PostPostIdRoute
+  '/profile/$username': typeof ProfileUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/create': typeof CreateRoute
+  '/feed': typeof FeedRoute
+  '/search': typeof SearchRoute
+  '/post/$postId': typeof PostPostIdRoute
+  '/profile/$username': typeof ProfileUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/create': typeof CreateRoute
+  '/feed': typeof FeedRoute
+  '/search': typeof SearchRoute
+  '/post/$postId': typeof PostPostIdRoute
+  '/profile/$username': typeof ProfileUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/activities'
+    | '/admin'
+    | '/auth'
+    | '/create'
+    | '/feed'
+    | '/search'
+    | '/post/$postId'
+    | '/profile/$username'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/activities'
+    | '/admin'
+    | '/auth'
+    | '/create'
+    | '/feed'
+    | '/search'
+    | '/post/$postId'
+    | '/profile/$username'
+  id:
+    | '__root__'
+    | '/'
+    | '/activities'
+    | '/admin'
+    | '/auth'
+    | '/create'
+    | '/feed'
+    | '/search'
+    | '/post/$postId'
+    | '/profile/$username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivitiesRoute: typeof ActivitiesRoute
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
+  CreateRoute: typeof CreateRoute
+  FeedRoute: typeof FeedRoute
+  SearchRoute: typeof SearchRoute
+  PostPostIdRoute: typeof PostPostIdRoute
+  ProfileUsernameRoute: typeof ProfileUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feed': {
+      id: '/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof FeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/post/$postId': {
+      id: '/post/$postId'
+      path: '/post/$postId'
+      fullPath: '/post/$postId'
+      preLoaderRoute: typeof PostPostIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/$username': {
+      id: '/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof ProfileUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivitiesRoute: ActivitiesRoute,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
+  CreateRoute: CreateRoute,
+  FeedRoute: FeedRoute,
+  SearchRoute: SearchRoute,
+  PostPostIdRoute: PostPostIdRoute,
+  ProfileUsernameRoute: ProfileUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
