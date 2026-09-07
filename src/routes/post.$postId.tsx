@@ -10,7 +10,8 @@ import { StorageImage } from "@/components/StorageImage";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/States";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { MentionTextarea } from "@/components/MentionTextarea";
+import { MentionText, fetchKnownMentions, syncMentions } from "@/lib/mentions";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/lib/auth";
@@ -87,20 +88,32 @@ function PostPage() {
     },
   });
 
+  const knownMentions = useQuery({
+    queryKey: ["known-mentions", postId, post.data?.body, comments.data?.length],
+    enabled: !!post.data,
+    queryFn: () =>
+      fetchKnownMentions([post.data?.body, ...(comments.data ?? []).map((c) => c.body)]),
+  });
+
   const addComment = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("auth");
       const text = body.trim();
       if (text.length < 2) throw new Error("short");
       if (text.length > 2000) throw new Error("long");
-      const { error } = await supabase.from("comments").insert({
-        post_id: postId,
-        author_user_id: user.id,
-        parent_id: replyTo,
-        body: text,
-        is_anonymous: anonymous,
-      });
+      const { data, error } = await supabase
+        .from("comments")
+        .insert({
+          post_id: postId,
+          author_user_id: user.id,
+          parent_id: replyTo,
+          body: text,
+          is_anonymous: anonymous,
+        })
+        .select("id")
+        .single();
       if (error) throw error;
+      if (data) await syncMentions("comment", data.id, text);
     },
     onSuccess: () => {
       setBody("");
@@ -108,6 +121,7 @@ function PostPage() {
       toast.success("Comment added");
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
       queryClient.invalidateQueries({ queryKey: ["post", postId] });
+      queryClient.invalidateQueries({ queryKey: ["known-mentions", postId] });
     },
     onError: (error: Error) => {
       if (error.message === "auth") toast.error("Sign in to comment");
@@ -171,7 +185,13 @@ function PostPage() {
         </div>
 
         <h1 className="text-2xl font-bold leading-tight">{p.title}</h1>
-        {p.body ? <p className="whitespace-pre-wrap text-sm leading-relaxed">{p.body}</p> : null}
+        {p.body ? (
+          <MentionText
+            text={p.body}
+            knownUsernames={knownMentions.data}
+            className="whitespace-pre-wrap break-words text-sm leading-relaxed"
+          />
+        ) : null}
         {p.image_url ? (
           <StorageImage
             path={p.image_url}
@@ -224,13 +244,13 @@ function PostPage() {
             <Label htmlFor="comment-body" className="sr-only">
               Your comment
             </Label>
-            <Textarea
+            <MentionTextarea
               id="comment-body"
               value={body}
               rows={3}
               maxLength={2000}
-              placeholder="Add to the discussion…"
-              onChange={(e) => setBody(e.target.value)}
+              placeholder="Add to the discussion… type @ to mention someone"
+              onValueChange={setBody}
             />
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
@@ -264,13 +284,18 @@ function PostPage() {
               <CommentItem
                 comment={c}
                 myVote={myVotes.data?.[c.id!] ?? 0}
+                knownMentions={knownMentions.data}
                 onReply={() => setReplyTo(c.id!)}
               />
               {childrenOf(c.id!).length ? (
                 <ul className="ml-5 space-y-3 border-l border-border pl-4">
                   {childrenOf(c.id!).map((child) => (
                     <li key={child.id}>
-                      <CommentItem comment={child} myVote={myVotes.data?.[child.id!] ?? 0} />
+                      <CommentItem
+                        comment={child}
+                        myVote={myVotes.data?.[child.id!] ?? 0}
+                        knownMentions={knownMentions.data}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -286,10 +311,12 @@ function PostPage() {
 function CommentItem({
   comment,
   myVote,
+  knownMentions,
   onReply,
 }: {
   comment: PublicComment;
   myVote: number;
+  knownMentions?: Set<string> | undefined;
   onReply?: () => void;
 }) {
   return (
@@ -299,7 +326,11 @@ function CommentItem({
         username={comment.author_username}
         createdAt={comment.created_at ?? new Date().toISOString()}
       />
-      <p className="whitespace-pre-wrap text-sm leading-relaxed">{comment.body}</p>
+      <MentionText
+        text={comment.body ?? ""}
+        knownUsernames={knownMentions}
+        className="whitespace-pre-wrap break-words text-sm leading-relaxed"
+      />
       <div className="flex items-center gap-2">
         <VoteButtons
           targetId={comment.id!}

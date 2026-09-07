@@ -214,6 +214,38 @@ export type Database = {
           },
         ]
       }
+      mentions: {
+        Row: {
+          created_at: string
+          id: string
+          mentioned_user_id: string
+          source_id: string
+          source_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mentioned_user_id: string
+          source_id: string
+          source_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mentioned_user_id?: string
+          source_id?: string
+          source_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentions_mentioned_user_id_fkey"
+            columns: ["mentioned_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_votes: {
         Row: {
           created_at: string
@@ -316,6 +348,7 @@ export type Database = {
           reputation: number
           updated_at: string
           username: string
+          username_confirmed: boolean
         }
         Insert: {
           avatar_url?: string | null
@@ -326,6 +359,7 @@ export type Database = {
           reputation?: number
           updated_at?: string
           username: string
+          username_confirmed?: boolean
         }
         Update: {
           avatar_url?: string | null
@@ -336,6 +370,7 @@ export type Database = {
           reputation?: number
           updated_at?: string
           username?: string
+          username_confirmed?: boolean
         }
         Relationships: []
       }
@@ -369,6 +404,18 @@ export type Database = {
           status?: string
           target_id?: string
           target_type?: string
+        }
+        Relationships: []
+      }
+      reserved_usernames: {
+        Row: {
+          name: string
+        }
+        Insert: {
+          name: string
+        }
+        Update: {
+          name?: string
         }
         Relationships: []
       }
@@ -510,6 +557,22 @@ export type Database = {
           target_type: string
         }[]
       }
+      search_profiles: {
+        Args: { _limit?: number; _q: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          display_name: string
+          id: string
+          reputation: number
+          username: string
+        }[]
+      }
+      set_my_username: { Args: { _username: string }; Returns: string }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
+      suggest_usernames: { Args: { _base: string }; Returns: string[] }
+      username_available: { Args: { _username: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

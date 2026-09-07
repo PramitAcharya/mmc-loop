@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { CalendarClock, Home, PenSquare, Search, Shield } from "lucide-react";
+import { CalendarClock, Home, Moon, PenSquare, Search, Shield, Sun } from "lucide-react";
+import { useTheme } from "@/lib/theme";
 import { Wordmark } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,6 +64,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           <Button asChild size="sm" className="hidden sm:inline-flex">
             <Link to="/create">
               <PenSquare className="mr-1 h-4 w-4" aria-hidden="true" />
@@ -72,7 +74,7 @@ export function SiteHeader() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="max-w-[10rem] truncate">
                   {profile?.username ? `@${profile.username}` : "Account"}
                 </Button>
               </DropdownMenuTrigger>
@@ -86,6 +88,9 @@ export function SiteHeader() {
                     </Link>
                   </DropdownMenuItem>
                 ) : null}
+                <DropdownMenuItem asChild>
+                  <Link to="/settings">Settings</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/create">Create post</Link>
                 </DropdownMenuItem>
@@ -170,5 +175,25 @@ export function MobileNav() {
         </li>
       </ul>
     </nav>
+  );
+}
+
+export function ThemeToggle() {
+  const { resolved, setTheme } = useTheme();
+  const next = resolved === "dark" ? "light" : "dark";
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label={`Switch to ${next} mode`}
+      title={`Switch to ${next} mode`}
+      onClick={() => setTheme(next)}
+    >
+      {resolved === "dark" ? (
+        <Sun className="h-4 w-4" aria-hidden="true" />
+      ) : (
+        <Moon className="h-4 w-4" aria-hidden="true" />
+      )}
+    </Button>
   );
 }
