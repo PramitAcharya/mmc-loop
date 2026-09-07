@@ -1,9 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PostCard } from "@/components/PostCard";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/States";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth";
 import { POST_SELECT, type PublicPost } from "@/lib/community";
 
 export const Route = createFileRoute("/profile/$username")({
@@ -22,34 +24,57 @@ export const Route = createFileRoute("/profile/$username")({
   component: ProfilePage,
 });
 
+const PAGE_SIZE = 10;
+
 function ProfilePage() {
   const { username } = Route.useParams();
+  const { user } = useAuth();
 
   const profile = useQuery({
-    queryKey: ["profile", username],
+    queryKey: ["profile", username.toLowerCase()],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, username, display_name, bio, reputation, created_at")
-        .eq("username", username)
+        .select("id, username, display_name, bio, avatar_url, reputation, created_at")
+        .ilike("username", username)
         .maybeSingle();
       if (error) throw error;
       return data;
     },
   });
 
+  const profileId = profile.data?.id ?? null;
+  const isOwner = !!user && user.id === profileId;
+
+  // Public posts are always keyed off the stable profile id, never the username.
   const posts = useQuery({
-    queryKey: ["posts", "by-author", profile.data?.id],
-    enabled: !!profile.data?.id,
+    queryKey: ["posts", "by-author", profileId],
+    enabled: !!profileId,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("public_posts")
         .select(POST_SELECT)
-        .eq("author_id", profile.data!.id)
+        .eq("author_id", profileId!)
         .order("created_at", { ascending: false })
-        .limit(20);
+        .limit(PAGE_SIZE * 3);
       if (error) throw error;
       return (data ?? []) as PublicPost[];
+    },
+  });
+
+  // Only the owner can read their own anonymous posts (RLS enforces this).
+  const anonCount = useQuery({
+    queryKey: ["posts", "my-anon-count", profileId],
+    enabled: isOwner,
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("posts")
+        .select("id", { count: "exact", head: true })
+        .eq("author_user_id", profileId!)
+        .eq("is_anonymous", true)
+        .eq("status", "visible");
+      if (error) return 0;
+      return count ?? 0;
     },
   });
 
@@ -70,20 +95,25 @@ function ProfilePage() {
           >
             {p.username[0]?.toUpperCase()}
           </span>
-          <div>
-            <h1 className="text-xl font-bold">@{p.username}</h1>
-            {p.display_name ? (
-              <p className="text-sm text-muted-foreground">{p.display_name}</p>
+          <div className="min-w-0">
+            <h1 className="truncate text-xl font-bold">@{p.username}</h1>
+            {p.display_name && p.display_name !== p.username ? (
+              <p className="truncate text-sm text-muted-foreground">{p.display_name}</p>
             ) : null}
           </div>
           <Badge variant="secondary" className="ml-auto rounded-full">
             {p.reputation} reputation
           </Badge>
         </div>
-        {p.bio ? <p className="text-sm">{p.bio}</p> : null}
+        {p.bio ? <p className="whitespace-pre-wrap break-words text-sm">{p.bio}</p> : null}
         <p className="text-xs text-muted-foreground">
           Joined {new Date(p.created_at).toLocaleDateString()}
         </p>
+        {isOwner ? (
+          <Button asChild size="sm" variant="outline">
+            <Link to="/settings">Edit profile</Link>
+          </Button>
+        ) : null}
       </header>
 
       <section aria-labelledby="user-posts" className="space-y-3">
@@ -92,10 +122,25 @@ function ProfilePage() {
         </h2>
         <p className="text-xs text-muted-foreground">
           Anonymous posts never appear on a profile.
+          {isOwner && (anonCount.data ?? 0) > 0
+            ? ` You also have ${anonCount.data} anonymous post${anonCount.data === 1 ? "" : "s"}, visible only as “Anonymous Student”.`
+            : ""}
         </p>
         {posts.isLoading ? <ListSkeleton rows={2} /> : null}
+        {posts.isError ? <ErrorState message="These posts could not be loaded." /> : null}
         {posts.data && posts.data.length === 0 ? (
-          <EmptyState title="No public posts yet" icon="📝" />
+          <EmptyState
+            title="No public posts yet"
+            description={isOwner ? "Anything you post publicly will show up here." : undefined}
+            icon="📝"
+            action={
+              isOwner ? (
+                <Button asChild size="sm">
+                  <Link to="/create">Create a post</Link>
+                </Button>
+              ) : undefined
+            }
+          />
         ) : null}
         {(posts.data ?? []).map((post) => (
           <PostCard key={post.id} post={post} />
