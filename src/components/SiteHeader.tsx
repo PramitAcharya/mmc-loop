@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { CalendarClock, Home, PenSquare, Search, Shield } from "lucide-react";
+import { CalendarClock, Home, Moon, PenSquare, Search, Shield, Sun } from "lucide-react";
+import { useTheme } from "@/lib/theme";
 import { Wordmark } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import {
