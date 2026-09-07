@@ -129,18 +129,20 @@ function ProfilePage() {
         {posts.isLoading ? <ListSkeleton rows={2} /> : null}
         {posts.isError ? <ErrorState message="These posts could not be loaded." /> : null}
         {posts.data && posts.data.length === 0 ? (
-          <EmptyState
-            title="No public posts yet"
-            description={isOwner ? "Anything you post publicly will show up here." : undefined}
-            icon="📝"
-            action={
-              isOwner ? (
+          isOwner ? (
+            <EmptyState
+              title="No public posts yet"
+              description="Anything you post publicly will show up here."
+              icon="📝"
+              action={
                 <Button asChild size="sm">
                   <Link to="/create">Create a post</Link>
                 </Button>
-              ) : undefined
-            }
-          />
+              }
+            />
+          ) : (
+            <EmptyState title="No public posts yet" icon="📝" />
+          )
         ) : null}
         {(posts.data ?? []).map((post) => (
           <PostCard key={post.id} post={post} />

@@ -177,3 +177,23 @@ export function MobileNav() {
     </nav>
   );
 }
+
+export function ThemeToggle() {
+  const { resolved, setTheme } = useTheme();
+  const next = resolved === "dark" ? "light" : "dark";
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label={`Switch to ${next} mode`}
+      title={`Switch to ${next} mode`}
+      onClick={() => setTheme(next)}
+    >
+      {resolved === "dark" ? (
+        <Sun className="h-4 w-4" aria-hidden="true" />
+      ) : (
+        <Moon className="h-4 w-4" aria-hidden="true" />
+      )}
+    </Button>
+  );
+}
