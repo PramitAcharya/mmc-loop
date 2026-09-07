@@ -63,6 +63,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           <Button asChild size="sm" className="hidden sm:inline-flex">
             <Link to="/create">
               <PenSquare className="mr-1 h-4 w-4" aria-hidden="true" />
@@ -72,7 +73,7 @@ export function SiteHeader() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="max-w-[10rem] truncate">
                   {profile?.username ? `@${profile.username}` : "Account"}
                 </Button>
               </DropdownMenuTrigger>
@@ -86,6 +87,9 @@ export function SiteHeader() {
                     </Link>
                   </DropdownMenuItem>
                 ) : null}
+                <DropdownMenuItem asChild>
+                  <Link to="/settings">Settings</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/create">Create post</Link>
                 </DropdownMenuItem>
