@@ -166,13 +166,16 @@ function CreatePost() {
 
         <div className="space-y-2">
           <Label htmlFor="body">Details (optional)</Label>
-          <Textarea
+          <MentionTextarea
             id="body"
             value={body}
             rows={7}
             maxLength={5000}
-            onChange={(e) => setBody(e.target.value)}
+            onValueChange={setBody}
           />
+          <p className="text-xs text-muted-foreground">
+            Type @ to mention another student.
+          </p>
         </div>
 
         <div className="space-y-2">
