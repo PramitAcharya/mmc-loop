@@ -17,7 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+import { MentionTextarea } from "@/components/MentionTextarea";
+import { syncMentions } from "@/lib/mentions";
 
 export const Route = createFileRoute("/create")({
   head: () => ({
@@ -108,11 +109,13 @@ function CreatePost() {
       .select("id")
       .single();
 
-    setBusy(false);
     if (error || !data) {
+      setBusy(false);
       toast.error("Could not publish your post. Please try again.");
       return;
     }
+    if (parsed.data.body?.trim()) await syncMentions("post", data.id, parsed.data.body.trim());
+    setBusy(false);
     toast.success(anonymous ? "Posted as Anonymous Student" : "Post published");
     navigate({ to: "/post/$postId", params: { postId: data.id } });
   }
