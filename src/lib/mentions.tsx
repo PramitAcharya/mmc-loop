@@ -57,8 +57,8 @@ export function MentionText({
   className,
 }: {
   text: string;
-  knownUsernames?: Set<string>;
-  className?: string;
+  knownUsernames?: Set<string> | undefined;
+  className?: string | undefined;
 }) {
   const nodes: React.ReactNode[] = [];
   let last = 0;

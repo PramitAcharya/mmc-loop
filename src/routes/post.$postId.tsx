@@ -316,7 +316,7 @@ function CommentItem({
 }: {
   comment: PublicComment;
   myVote: number;
-  knownMentions?: Set<string>;
+  knownMentions?: Set<string> | undefined;
   onReply?: () => void;
 }) {
   return (
