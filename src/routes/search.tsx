@@ -17,14 +17,18 @@ import {
 } from "@/components/ui/select";
 import { fetchCategories, fetchPosts } from "@/lib/community";
 
-const searchSchema = z.object({
-  q: fallback(z.string(), "").default(""),
-  tab: fallback(z.string(), "all").default("all"),
-  category: fallback(z.string(), "all").default("all"),
-});
+type SearchParams = { q: string; tab: string; category: string };
+
+function str(value: unknown, fallbackValue: string) {
+  return typeof value === "string" && value.length > 0 ? value : fallbackValue;
+}
 
 export const Route = createFileRoute("/search")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (search: Record<string, unknown>): SearchParams => ({
+    q: str(search["q"], ""),
+    tab: str(search["tab"], "all"),
+    category: str(search["category"], "all"),
+  }),
   head: () => ({
     meta: [
       { title: "Search people and posts — MMCLoop" },
