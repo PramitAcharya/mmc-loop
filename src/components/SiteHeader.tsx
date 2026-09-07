@@ -1,6 +1,15 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { CalendarClock, Home, Moon, PenSquare, Search, Shield, Sun } from "lucide-react";
+import {
+  CalendarClock,
+  Home,
+  MessageSquareText,
+  Moon,
+  PenSquare,
+  Search,
+  Shield,
+  Sun,
+} from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import { Wordmark } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
@@ -19,6 +28,7 @@ const NAV = [
   { to: "/feed", label: "Feed", icon: Home },
   { to: "/activities", label: "Who's Free?", icon: CalendarClock },
   { to: "/search", label: "Search", icon: Search },
+  { to: "/chat", label: "Messages", icon: MessageSquareText },
 ] as const;
 
 export function SiteHeader() {
@@ -121,6 +131,7 @@ export function MobileNav() {
     { to: "/activities", label: "Free?", icon: CalendarClock },
     { to: "/create", label: "Post", icon: PenSquare },
     { to: "/search", label: "Search", icon: Search },
+    { to: "/chat", label: "Chat", icon: MessageSquareText },
   ] as const;
 
   return (

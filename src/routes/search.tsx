@@ -192,29 +192,36 @@ function SearchPage() {
               <ul className="space-y-2">
                 {peopleList.map((p) => (
                   <li key={p.id}>
-                    <Link
-                      to="/profile/$username"
-                      params={{ username: p.username }}
-                      className="surface-panel flex items-center gap-3 p-3 transition-shadow hover:shadow-[var(--shadow-lift)]"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-primary"
+                    <div className="surface-panel flex items-center gap-3 p-3 transition-shadow hover:shadow-[var(--shadow-lift)]">
+                      <Link
+                        to="/profile/$username"
+                        params={{ username: p.username }}
+                        className="flex min-w-0 flex-1 items-center gap-3"
                       >
-                        {p.username[0]?.toUpperCase()}
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block truncate font-medium">
-                          {p.display_name || p.username}
+                        <span
+                          aria-hidden="true"
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-primary"
+                        >
+                          {p.username[0]?.toUpperCase()}
                         </span>
-                        <span className="block truncate text-xs text-muted-foreground">
-                          @{p.username} · {p.reputation} reputation
+                        <span className="min-w-0">
+                          <span className="block truncate font-medium">
+                            {p.display_name || p.username}
+                          </span>
+                          <span className="block truncate text-xs text-muted-foreground">
+                            @{p.username} · {p.reputation} reputation
+                          </span>
+                          {p.bio ? (
+                            <span className="block truncate text-xs text-muted-foreground">{p.bio}</span>
+                          ) : null}
                         </span>
-                        {p.bio ? (
-                          <span className="block truncate text-xs text-muted-foreground">{p.bio}</span>
-                        ) : null}
-                      </span>
-                    </Link>
+                      </Link>
+                      <Button asChild size="sm" variant="outline">
+                        <Link to="/chat" search={{ with: p.id }}>
+                          Message
+                        </Link>
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>

@@ -109,11 +109,20 @@ function ProfilePage() {
         <p className="text-xs text-muted-foreground">
           Joined {new Date(p.created_at).toLocaleDateString()}
         </p>
-        {isOwner ? (
-          <Button asChild size="sm" variant="outline">
-            <Link to="/settings">Edit profile</Link>
-          </Button>
-        ) : null}
+        <div className="flex flex-wrap gap-2">
+          {isOwner ? (
+            <Button asChild size="sm" variant="outline">
+              <Link to="/settings">Edit profile</Link>
+            </Button>
+          ) : null}
+          {!isOwner && user ? (
+            <Button asChild size="sm" variant="secondary">
+              <Link to="/chat" search={{ with: p.id }}>
+                Message
+              </Link>
+            </Button>
+          ) : null}
+        </div>
       </header>
 
       <section aria-labelledby="user-posts" className="space-y-3">

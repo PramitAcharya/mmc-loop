@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as SearchRouteImport } from './routes/search'
@@ -38,6 +39,11 @@ const AdminRoute = AdminRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreateRoute = CreateRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
   '/create': typeof CreateRoute
   '/feed': typeof FeedRoute
   '/search': typeof SearchRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
   '/create': typeof CreateRoute
   '/feed': typeof FeedRoute
   '/search': typeof SearchRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/chat': typeof ChatRoute
   '/create': typeof CreateRoute
   '/feed': typeof FeedRoute
   '/search': typeof SearchRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/activities'
     | '/admin'
     | '/auth'
+    | '/chat'
     | '/create'
     | '/feed'
     | '/search'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/activities'
     | '/admin'
     | '/auth'
+    | '/chat'
     | '/create'
     | '/feed'
     | '/search'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/activities'
     | '/admin'
     | '/auth'
+    | '/chat'
     | '/create'
     | '/feed'
     | '/search'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   ActivitiesRoute: typeof ActivitiesRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  ChatRoute: typeof ChatRoute
   CreateRoute: typeof CreateRoute
   FeedRoute: typeof FeedRoute
   SearchRoute: typeof SearchRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create': {
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   ActivitiesRoute: ActivitiesRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  ChatRoute: ChatRoute,
   CreateRoute: CreateRoute,
   FeedRoute: FeedRoute,
   SearchRoute: SearchRoute,
