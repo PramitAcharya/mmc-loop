@@ -115,6 +115,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body>
         {children}
@@ -129,20 +130,23 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <div className="flex min-h-screen flex-col">
-          <SiteHeader />
-          <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-24 md:pb-10">
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-          </main>
-          <footer className="border-t border-border px-4 py-6 pb-24 text-center text-xs text-muted-foreground md:pb-6">
-            {DISCLAIMER}
-          </footer>
-          <MobileNav />
-        </div>
-        <Toaster />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-24 md:pb-10">
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </main>
+            <footer className="border-t border-border px-4 py-6 pb-24 text-center text-xs text-muted-foreground md:pb-6">
+              {DISCLAIMER}
+            </footer>
+            <MobileNav />
+          </div>
+          <UsernameOnboarding />
+          <Toaster />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
