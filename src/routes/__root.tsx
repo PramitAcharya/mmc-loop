@@ -12,8 +12,10 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth";
+import { ThemeProvider, themeBootstrapScript } from "@/lib/theme";
 import { DISCLAIMER } from "@/lib/mmc";
 import { SiteHeader, MobileNav } from "@/components/SiteHeader";
+import { UsernameOnboarding } from "@/components/UsernameOnboarding";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
