@@ -15,11 +15,11 @@ export function extractMentionCandidates(text: string): string[] {
 
 export async function resolveMentions(names: string[]) {
   if (names.length === 0) return [] as { id: string; username: string }[];
-  const { data, error } = await supabase.from("profiles").select("id, username").in("username", names);
+  // ilike without wildcards = case-insensitive exact match, done in the database.
+  const filter = names.map((n) => `username.ilike.${n}`).join(",");
+  const { data, error } = await supabase.from("profiles").select("id, username").or(filter).limit(50);
   if (error) return [];
-  // usernames are stored case-insensitively unique; match loosely for safety
-  const lowered = new Set(names.map((n) => n.toLowerCase()));
-  return (data ?? []).filter((p) => lowered.has(p.username.toLowerCase()));
+  return data ?? [];
 }
 
 /** Persist structured mentions for a post or comment. Failures are non-fatal. */
