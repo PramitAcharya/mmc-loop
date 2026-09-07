@@ -18,7 +18,7 @@ export function UsernameOnboarding() {
     <Dialog open={open}>
       <DialogContent
         className="sm:max-w-md"
-        showCloseButton={false}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
