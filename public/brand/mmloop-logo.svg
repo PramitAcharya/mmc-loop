@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 128" role="img" aria-labelledby="title">
+  <title id="title">MMCLoop</title>
+  <defs>
+    <linearGradient id="loopGrad" x1="16" y1="8" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#007e80" />
+      <stop offset="1" stop-color="#00676e" />
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#loopGrad)" stroke-width="11" stroke-linecap="round">
+    <path d="M44 32a32 32 0 1 0 0 64c20 0 24-32 40-32a20 20 0 1 1 0 40" />
+  </g>
+  <text x="140" y="76" font-family="'Plus Jakarta Sans', 'Noto Sans', ui-sans-serif, system-ui, sans-serif" font-size="58" font-weight="700" fill="#172020">
+    MMC<tspan fill="#007e80">Loop</tspan>
+  </text>
+</svg>

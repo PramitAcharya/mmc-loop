@@ -1,0 +1,47 @@
+name: Supabase migrations
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "supabase/**"
+      - ".github/workflows/supabase-migrations.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-migrations-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Resolve project reference
+        id: project
+        run: |
+          PROJECT_ID="${{ secrets.SUPABASE_PROJECT_ID }}"
+          if [ -z "$PROJECT_ID" ] && [ -f supabase/config.toml ]; then
+            PROJECT_ID="$(sed -n 's/^project_id[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' supabase/config.toml | head -n1)"
+          fi
+          if [ -z "$PROJECT_ID" ]; then
+            echo "::error::SUPABASE_PROJECT_ID is not set and could not be read from supabase/config.toml"
+            exit 1
+          fi
+          echo "project-id=${PROJECT_ID}" >> "$GITHUB_OUTPUT"
+
+      - name: Apply database migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ steps.project.outputs.project-id }}
+        run: |
+          bash supabase/scripts/push-migrations.sh "${SUPABASE_PROJECT_ID}"

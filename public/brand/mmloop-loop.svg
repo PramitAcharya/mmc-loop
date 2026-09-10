@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">MMCLoop loop mark</title>
+  <defs>
+    <linearGradient id="loopGrad" x1="64" y1="24" x2="208" y2="224" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#007e80" />
+      <stop offset="1" stop-color="#00676e" />
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#loopGrad)" stroke-width="22" stroke-linecap="round">
+    <path d="M88 64a64 64 0 1 0 0 128c40 0 48-64 80-64a40 40 0 1 1 0 80" />
+  </g>
+</svg>

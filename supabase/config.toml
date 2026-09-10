@@ -1,0 +1,10 @@
+project_id = "zrqdcgnyhesmmezdppup"
+[db]
+  enabled = true
+[auth]
+  enabled = true
+  site_url = "https://mmcloop-github-io.vercel.app"
+  additional_redirect_urls = ["http://localhost:3000"]
+  email = { enable_confirmations = true }
+[storage]
+  enabled = true

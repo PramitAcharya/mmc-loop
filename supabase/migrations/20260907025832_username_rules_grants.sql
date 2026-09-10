@@ -1,0 +1,1 @@
+revoke all on function public.enforce_username_rules() from public, anon, authenticated;
